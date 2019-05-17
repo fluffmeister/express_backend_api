@@ -9,7 +9,7 @@ const router = express.Router();
 /////
 router.get('/item', async (req, res) => {
   try{
-    const data = await fetch (`https://us.api.blizzard.com/d3/data/item/corrupted-ashbringer-Unique_Sword_2H_104_x1?locale=en_US&access_token=USojOkHyGAb62Z1bHNsVRA3aAMldeBqxTQ`
+    const data = await fetch (`https://us.api.blizzard.com/d3/data/item/corrupted-ashbringer-Unique_Sword_2H_104_x1?locale=en_US&access_token=${process.env.TOKEN}`
       )
     if(!data.ok){
       throw Error(data.response.statusText)
@@ -24,9 +24,26 @@ router.get('/item', async (req, res) => {
 //////////////////
 
 //////////////search for specific item
-router.get('/item/:id', async (req, res) => {
+router.get('/item/:slug/:id', async (req, res) => {
   try{
-    const data = await fetch(`https://us.api.blizzard.com/d3/data/item/${req.params.id}?locale=en_US&access_token=USojOkHyGAb62Z1bHNsVRA3aAMldeBqxTQ`
+    const data = await fetch(`https://us.api.blizzard.com/d3/data/item/${req.params.slug}-${req.params.id}?locale=en_US&access_token=${process.env.TOKEN}`
+    )
+    if(!data.ok){
+      throw Error(data.response.statusText)
+    }
+    const itemJson= await data.json()
+ 
+    res.json(itemJson)
+  }catch(err){
+    return err
+  }
+
+})
+//////////
+router.get('/item-type/:id', async (req, res) => {
+  try{
+    const data = await fetch(
+      `https://us.api.blizzard.com/d3/data/item-type/${req.params.id}?locale=en_US&access_token=${process.env.TOKEN}`
     
     )
     if(!data.ok){
@@ -40,7 +57,7 @@ router.get('/item/:id', async (req, res) => {
   }
 
 })
-//////////
+//////
 router.post('/', (req, res) => {
   return res.json({
       body:req.body

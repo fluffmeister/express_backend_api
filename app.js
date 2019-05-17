@@ -54,7 +54,9 @@ app.get('/auth/bnet',
 app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/' }),
     function(req, res){
-        res.redirect('https://us.api.blizzard.com/d3/data/item/corrupted-ashbringer-Unique_Sword_2H_104_x1?locale=en_US&access_token=US8PwUayCLRXkKuwcxJEhyXoh9iuy2yiyo');
+        res.redirect(
+              "/"
+          );
     });
 
 module.exports = app;

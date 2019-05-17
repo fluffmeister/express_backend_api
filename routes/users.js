@@ -14,9 +14,11 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+  console.log('hitttttt')
   try {
-    const item = await fetch('https://us.api.blizzard.com/d3/data/item/corrupted-ashbringer-Unique_Sword_2H_104_x1?locale=en_US&access_token=US8PwUayCLRXkKuwcxJEhyXoh9iuy2yiyo').then(res.json({item}))
-    res.json({item})
+    const user=await User.create(req.body)
+    console.log(user,'hoott')
+    res.json({user})
   } catch(err) {
     res.json({err})
   }
@@ -34,9 +36,10 @@ router.post('/login', async (req, res) => {
   console.log('hit')
   try {
     const foundUser = await User.findOne({username: req.body.username})
+    console.log(foundUser)
     res.json({
       user: foundUser,
-      success: true
+      success: foundUser ? false : true
     })
   } catch(err) {
     res.json({err})
