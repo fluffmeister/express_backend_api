@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const passport = require('passport');
 var BnetStrategy = require('passport-bnet').Strategy;
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -10,7 +11,7 @@ require('./db/db')
 
 const apiRouter = require('./routes/api');
 const usersRouter = require('./routes/users');
-const passport = require('passport');
+
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 app.use('/d3/data', apiRouter);
 app.use('/users', usersRouter);
@@ -37,7 +39,7 @@ passport.use(new BnetStrategy({
   callbackURL: "http://localhost:3001/auth/bnet/callback",
   region: "us"
 }, function(accessToken, refreshToken, profile, done) {
-  return done(null, profile);
+    return done(null, profile);
 }));
 
 passport.serializeUser(function(user, done) {
@@ -48,15 +50,19 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-app.get('/auth/bnet',
-    passport.authenticate('bnet'));
+app.get('/auth/bnet', passport.authenticate('bnet') );
  
 app.get('/auth/bnet/callback',
     passport.authenticate('bnet', { failureRedirect: '/' }),
     function(req, res){
-        res.redirect(
-              "/"
+      console.log(req.user)
+        res.json(
+              {user: req.user}
           );
     });
 
+app.get('/get-user', (req, res) => {
+  console.log(req.user)
+  // res.json({user: req.user})
+})
 module.exports = app;

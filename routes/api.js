@@ -6,23 +6,6 @@ const router = express.Router();
 
 
 
-/////
-router.get('/item', async (req, res) => {
-  try{
-    const data = await fetch (`https://us.api.blizzard.com/d3/data/item/corrupted-ashbringer-Unique_Sword_2H_104_x1?locale=en_US&access_token=${process.env.TOKEN}`
-      )
-    if(!data.ok){
-      throw Error(data.response.statusText)
-    }
-    const itemJson= await data.json()
-
-    res.json(itemJson)
-}catch(err){
-  console.log(err, 'err in the catch block')
-  return err
-}})
-//////////////////
-
 //////////////search for specific item
 router.get('/item/:slug/:id', async (req, res) => {
   try{
@@ -39,7 +22,7 @@ router.get('/item/:slug/:id', async (req, res) => {
   }
 
 })
-//////////
+//////////Search for item type
 router.get('/item-type/:id', async (req, res) => {
   try{
     const data = await fetch(
@@ -57,7 +40,46 @@ router.get('/item-type/:id', async (req, res) => {
   }
 
 })
-//////
+
+//////////////detailed search infor for skills
+router.get('/hero/:class/skills/:id', async (req, res) => {
+  console.log('this was hit22222')
+  try{
+    const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${req.params.class}/skills/${req.params.id}?locale=en_US&access_token=${process.env.TOKEN}`
+    )                         
+    if(!data.ok){
+      throw Error(data.response.statusText)
+    }
+    const charJson= await data.json()
+ 
+    res.json(charJson)
+  }catch(err){
+    return err
+  }
+   
+})
+//////search for class infor and skills
+router.get('/hero/:class', async (req, res) => {
+  console.log('this was hit')
+  try{
+    const data = await fetch(`https://us.api.blizzard.com/d3/data/hero/${req.params.class}?locale=en_US&access_token=${process.env.TOKEN}`
+    )                         
+    if(!data.ok){
+      throw Error(data.response.statusText)
+    }
+    const charJson= await data.json()
+ 
+    res.json(charJson)
+  }catch(err){
+    return err
+  }
+
+})
+/////////////////////
+
+
+
+
 router.post('/', (req, res) => {
   return res.json({
       body:req.body
@@ -72,7 +94,5 @@ router.delete('/', (req, res) => {
   return res.json({data: 'Received a DELETE HTTP method'});
 });
 
-router.get('/sucessfulnode',(req,res)=>{
-  return res.json({req:req.body});
-});
+
 module.exports = router;
