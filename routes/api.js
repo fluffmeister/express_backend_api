@@ -29,6 +29,7 @@ router.get('/item-type/:id', async (req, res) => {
       `https://us.api.blizzard.com/d3/data/item-type/${req.params.id}?locale=en_US&access_token=${process.env.TOKEN}`
     
     )
+    console.log(req.user,'this is the user')
     if(!data.ok){
       throw Error(data.response.statusText)
     }
